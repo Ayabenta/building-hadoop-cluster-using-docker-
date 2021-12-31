@@ -1,0 +1,58 @@
+1. Docker must be installed and configured on windows 
+2. clone HDFS on our local machines  :  git clone https://github.com/big-data-europe/docker-hadoop.git 
+go to docker-hadoop folder by cd docker-hadoop
+run docker-compos up -d in order to download all the images and run then in order to create docker containers ( the option -detach starts the containers in the background and leaves them running.)
+run docker container ls to see the runing docker container: 
+these are the names of containers we should find : 
+    hadoop-historyserver
+    hadoop-nodemanager
+    hadoop-datanode
+    hadoop-resourcemanager
+    hadoop-namenode
+    
+to add 2 more Datanodes we need to edit docker-compose.yml file
+refer to https://github.com/Ayabenta/building-hadoop-cluster-using-docker-/blob/main/docker-compose.yml 
+after that run again docker-compose up -d 
+check the state of the  cluster youripadress:9870  
+first download this  https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbkQ4MnMtWmdHQzlLeWZQdFlfX1k5UjNJbUpXUXxBQ3Jtc0tsU1NER2pvWUU0bzhVcDdSMFpLa3hFTDRTQ2p5Y2s1RjZ6UGt1TjlWWWdMS0RKbnVGMHBqOVJfZlptLVBDUTlab1BWNU9EUG9EamNxMkFpU0dicHRpQUlGMVdZX1RGTllzRjZOdmIxQWl6ZmZvLVh2WQ&q=https%3A%2F%2Fgithub.com%2Fbig-data-europe%2Fdocker-hadoop.git
+
+copy that to the namenode docker cp hadoop-mapreduce-examples-2.7.1-sources.jar namenode:/tmp/ 
+create a file named for ex Input.txt where you can write anythine for me i wrote hello wolrd hello hadoop it's Aya 
+copy that file to namenode : docker cp Input.txt namenode:/tmp/
+
+cd tmp 
+
+make a file in hdfs : hdfs dfs -mkdir /usr/root/input
+
+store the input.txt file in hdfs : hdfs dfs -put Input.txt /user/root/input
+
+show the content : hdfs dfs -cat /user/root/input/Input.txt
+run the map reduce code : 
+hadoop jar hadoop-mapreduce-examples-2.7.1-sources.jar org.apache.hadoop.examples.WordCount input output
+
+check the output 
+
+hdfs dfs -cat output/part-r-00000
+    
+In order to interact with container's bash shell run the following command : Docker exec -it namenode /bin/bash
+
+hdfs dfs -mkdir -p /user/root 
+in my case was 
+Aya     1
+Hello   1
+hadoop  2
+hello   3
+it's    1
+world   2
+
+* we can add a file to a specific datanode by :  hdfs dfs -put Input.txt 66486b39a41a , '66486b39a41a' is the id of datanode
+
+shotdown the running containers 
+first exit the  shell by typing exit 
+docker-compose down
+
+type docker ps to make sure there s no running container
+
+
+    
+ 
